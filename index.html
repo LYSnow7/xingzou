@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>行走宝宝专属页面</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+            background: #000000;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .container {
+            width: 100%;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .page {
+            display: none;
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .page.active {
+            display: flex;
+        }
+
+        /* 页面1样式 */
+        .page1 {
+            background: rgba(0, 0, 0, 0.8);
+        }
+
+        .login-dialog {
+            background: white;
+            border-radius: 16px;
+            padding: 30px;
+            width: 320px;
+            text-align: center;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            animation: slideIn 0.5s ease-out;
+        }
+
+        .login-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #87CEEB;
+            margin-bottom: 20px;
+        }
+
+        .login-subtitle {
+            font-size: 16px;
+            color: #87CEEB;
+            margin-bottom: 25px;
+        }
+
+        .input-field {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #e1e5e9;
+            border-radius: 8px;
+            font-size: 16px;
+            margin-bottom: 25px;
+            transition: border-color 0.3s;
+        }
+
+        .input-field:focus {
+            outline: none;
+            border-color: #007AFF;
+        }
+
+        .button-group {
+            display: flex;
+            justify-content: space-between;
+            gap: 15px;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background: #007AFF;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #0056CC;
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: #007AFF;
+            border: 1px solid #007AFF;
+        }
+
+        .btn-secondary:hover {
+            background: #007AFF;
+            color: white;
+        }
+
+        /* 页面2样式 */
+        .page2 {
+            background: rgba(0, 0, 0, 0.8);
+        }
+
+        .success-dialog {
+            background: white;
+            border-radius: 16px;
+            padding: 40px 30px;
+            width: 320px;
+            text-align: center;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            animation: slideIn 0.5s ease-out;
+        }
+
+        .success-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #87CEEB;
+            margin-bottom: 20px;
+        }
+
+        .success-message {
+            font-size: 24px;
+            margin-bottom: 30px;
+        }
+
+        .ok-btn {
+            background: #007AFF;
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            margin-bottom: 20px;
+            transition: background 0.3s;
+        }
+
+        .ok-btn:hover {
+            background: #0056CC;
+        }
+
+        .suppress-btn {
+            background: transparent;
+            color: #FF3B30;
+            border: none;
+            font-size: 14px;
+            cursor: pointer;
+            text-decoration: underline;
+        }
+
+        /* 页面3样式 */
+        .page3 {
+            background: #000000;
+            flex-direction: column;
+            text-align: center;
+            color: #87CEEB;
+            padding: 40px;
+        }
+
+        .welcome-text {
+            font-size: 48px;
+            margin-bottom: 30px;
+            animation: fadeInUp 1s ease-out;
+        }
+
+        .heart-container {
+            margin: 40px 0;
+            animation: pulse 2s infinite;
+        }
+
+        .heart {
+            font-size: 80px;
+            background: linear-gradient(45deg, #FF6B9D, #FF8E9E);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            filter: drop-shadow(0 0 20px rgba(255, 107, 157, 0.5));
+        }
+
+        .subtitle {
+            font-size: 24px;
+            color: #87CEEB;
+            margin-bottom: 40px;
+            animation: fadeInUp 1s ease-out 0.5s both;
+        }
+
+        .magic-text {
+            font-size: 18px;
+            font-style: italic;
+            color: #87CEEB;
+            line-height: 1.6;
+            max-width: 500px;
+            margin: 0 auto;
+            animation: fadeInUp 1s ease-out 1s both;
+        }
+
+        .play-btn {
+            display: none;
+        }
+
+        /* 动画效果 */
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.1);
+            }
+        }
+
+        /* 错误提示 */
+        .error-message {
+            color: #FF3B30;
+            font-size: 14px;
+            margin-top: -15px;
+            margin-bottom: 15px;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .error-message.show {
+            opacity: 1;
+        }
+
+        /* 移动端适配 */
+        @media (max-width: 480px) {
+            .login-dialog, .success-dialog {
+                width: 90%;
+                margin: 0 20px;
+            }
+            
+            .welcome-text {
+                font-size: 36px;
+            }
+            
+            .heart {
+                font-size: 60px;
+            }
+            
+            .subtitle {
+                font-size: 20px;
+            }
+            
+            .magic-text {
+                font-size: 16px;
+                padding: 0 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- 页面1: 登录界面 -->
+        <div class="page page1 active" id="page1">
+            <div class="login-dialog">
+                <div class="login-title">An embedded page on this page says</div>
+                <div class="login-subtitle">请输入行走宝宝专属ID:</div>
+                <input type="password" class="input-field" id="passwordInput" placeholder="请输入密码">
+                <div class="error-message" id="errorMessage">密码错误，请重新输入</div>
+                <div class="button-group">
+                    <button class="btn btn-primary" onclick="checkPassword()">OK</button>
+                    <button class="btn btn-secondary" onclick="cancelLogin()">Cancel</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 页面2: 成功提示 -->
+        <div class="page page2" id="page2">
+            <div class="success-dialog">
+                <div class="success-title">An embedded page on this page says</div>
+                <div class="success-message">哟！让我看看谁来啦！🥰</div>
+                <button class="ok-btn" onclick="showFinalPage()">OK</button>
+                <button class="suppress-btn" onclick="suppressDialogs()">Suppress Dialogs</button>
+            </div>
+        </div>
+
+        <!-- 页面3: 最终页面 -->
+        <div class="page page3" id="page3">
+            <div class="welcome-text">🥰欢迎行走宝宝！</div>
+            <div class="heart-container">
+                <div class="heart">💖✨</div>
+            </div>
+            <div class="subtitle">行走宝宝专属网页</div>
+            <div class="magic-text">
+                This is a Magic Card. When you see this card, you will be the lucky star for the whole month!
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const correctPassword = "521125";
+        
+        function checkPassword() {
+            const input = document.getElementById('passwordInput');
+            const errorMsg = document.getElementById('errorMessage');
+            
+            if (input.value === correctPassword) {
+                showPage('page2');
+                input.value = '';
+                errorMsg.classList.remove('show');
+            } else {
+                errorMsg.classList.add('show');
+                input.value = '';
+                // 震动效果
+                input.style.animation = 'shake 0.5s';
+                setTimeout(() => {
+                    input.style.animation = '';
+                }, 500);
+            }
+        }
+        
+        function cancelLogin() {
+            document.getElementById('passwordInput').value = '';
+            document.getElementById('errorMessage').classList.remove('show');
+        }
+        
+        function showFinalPage() {
+            showPage('page3');
+            startFireworks();
+        }
+        
+        function suppressDialogs() {
+            showPage('page3');
+            startFireworks();
+        }
+        
+        function showPage(pageId) {
+            // 隐藏所有页面
+            document.querySelectorAll('.page').forEach(page => {
+                page.classList.remove('active');
+            });
+            
+            // 显示目标页面
+            document.getElementById(pageId).classList.add('active');
+        }
+        
+        function playAnimation() {
+            // 播放一些动画效果
+            const heart = document.querySelector('.heart');
+            heart.style.animation = 'pulse 0.5s ease-in-out 3';
+            
+            // 创建飘落的心形
+            createFloatingHearts();
+        }
+        
+        function createFloatingHearts() {
+            const container = document.querySelector('.page3');
+            
+            for (let i = 0; i < 10; i++) {
+                setTimeout(() => {
+                    const heart = document.createElement('div');
+                    heart.innerHTML = '💖';
+                    heart.style.position = 'absolute';
+                    heart.style.fontSize = '20px';
+                    heart.style.left = Math.random() * 100 + '%';
+                    heart.style.top = '-50px';
+                    heart.style.animation = 'fall 3s linear forwards';
+                    heart.style.pointerEvents = 'none';
+                    
+                    container.appendChild(heart);
+                    
+                    setTimeout(() => {
+                        heart.remove();
+                    }, 3000);
+                }, i * 200);
+            }
+        }
+        
+        function startFireworks() {
+            // 简单的烟花效果
+            setTimeout(() => {
+                createFloatingHearts();
+            }, 500);
+        }
+        
+        // 添加回车键支持
+        document.getElementById('passwordInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                checkPassword();
+            }
+        });
+        
+        // 添加CSS动画
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes shake {
+                0%, 100% { transform: translateX(0); }
+                25% { transform: translateX(-5px); }
+                75% { transform: translateX(5px); }
+            }
+            
+            @keyframes fall {
+                to {
+                    transform: translateY(100vh) rotate(360deg);
+                    opacity: 0;
+                }
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+</body>
+</html>
